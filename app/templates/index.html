@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Phishing Detection System</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <h1>Phishing Detection System</h1>
+
+  <section id="url-check">
+    <h2>Check URL</h2>
+    <input type="text" id="url-input" placeholder="Enter URL here">
+    <button id="check-url-btn">Check URL</button>
+    <p id="url-result"></p>
+  </section>
+
+  <section id="email-check">
+    <h2>Check Email</h2>
+    <textarea id="email-text" rows="5" cols="50" placeholder="Paste email content here"></textarea>
+    <br>
+    <button id="check-email-btn">Check Email</button>
+    <p id="email-result"></p>
+  </section>
+
+  <script>
+    // URL Check
+    document.getElementById("check-url-btn").addEventListener("click", function() {
+      const url = document.getElementById("url-input").value;
+      fetch(`/check_url?url=${encodeURIComponent(url)}`)
+        .then(response => response.json())
+        .then(data => {
+          document.getElementById("url-result").innerText = data.result || data.error;
+        })
+        .catch(error => {
+          document.getElementById("url-result").innerText = "Error checking URL.";
+          console.error("Error:", error);
+        });
+    });
+
+    // Email Check
+    document.getElementById("check-email-btn").addEventListener("click", function() {
+      const emailText = document.getElementById("email-text").value;
+      fetch("/check_email", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ email_text: emailText })
+      })
+        .then(response => response.json())
+        .then(data => {
+          document.getElementById("email-result").innerText = data.result || data.error;
+        })
+        .catch(error => {
+          document.getElementById("email-result").innerText = "Error checking email.";
+          console.error("Error:", error);
+        });
+    });
+  </script>
+</body>
+</html>
